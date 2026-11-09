@@ -31,7 +31,9 @@ public static class HierarchyColorTool
             coloredObjects[obj.GetInstanceID()] = color;
         }
 
+        
         EditorApplication.RepaintHierarchyWindow();
+        EditorPrefs.SetString("HierarchyColorTool", JsonUtility.ToJson(new ColorData(coloredObjects)));
     }
 
     [MenuItem("GameObject/Give color/Set Red", false, _Ordernumber)]

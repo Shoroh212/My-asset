@@ -1,11 +1,13 @@
+
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 [InitializeOnLoad]
 public static class HierarchyColorTool
 {
-    private static GameObject coloredObject;
-    private static Color selectedColor;
+    private static Dictionary<int, Color> coloredObjects =
+        new Dictionary<int, Color>();
 
     const int _Ordernumber = 14;
 
@@ -16,22 +18,18 @@ public static class HierarchyColorTool
 
     private static void DrawHierarchy(int instanceID, Rect selectionRect)
     {
-        if (coloredObject == null)
+        if (!coloredObjects.TryGetValue(instanceID, out Color color))
             return;
 
-        if (coloredObject.GetInstanceID() != instanceID)
-            return;
-
-        EditorGUI.DrawRect(selectionRect, selectedColor);
+        EditorGUI.DrawRect(selectionRect, color);
     }
 
     private static void SetColor(Color color)
     {
-        if (Selection.activeGameObject == null)
-            return;
-
-        coloredObject = Selection.activeGameObject;
-        selectedColor = color;
+        foreach (GameObject obj in Selection.gameObjects)
+        {
+            coloredObjects[obj.GetInstanceID()] = color;
+        }
 
         EditorApplication.RepaintHierarchyWindow();
     }
